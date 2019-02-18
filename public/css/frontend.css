@@ -3,7 +3,8 @@
     font-family:tahoma; 
     font-size:14px; 
     padding:0px; 
-    margin:0px
+    margin:0px;
+    color: white
 }
 
 p 
@@ -22,6 +23,15 @@ div.conversation
     margin-left:4vw;
     margin-right:auto;
 }
+
+div.loginDiv 
+{
+    margin-top:20px;
+    width:50vw;
+    margin-left:4vw;
+    margin-right:auto;
+}
+
 #header
 {
     padding-top:20px;
