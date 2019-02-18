@@ -1,0 +1,25 @@
+.input, input
+{
+    border-radius:2px;
+    border:1px
+    solid #009EF7;
+    margin-top:10px;
+    padding:5px;
+    width:256px;
+    background-color: white;
+    color:darkslategray; 
+}
+
+.button, #submit
+{
+    margin-top:10px;
+    padding:5px;
+    width:256px;
+    border: #009EF7;
+    color: darkslategray;
+}
+
+input:focus
+{
+    color: #009EF7;
+}

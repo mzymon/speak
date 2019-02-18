@@ -71,7 +71,13 @@ hbs.registerHelper('json', function(context) {
 });
 
 
-
+app.post('/loginDUPA',function(req,res){
+    console.log(req.body.JSON);
+    var user_name=req.body.user;
+    var password=req.body.password;
+    console.log("User name = "+user_name+", password is "+password);
+    res.end("yes");
+  });
 
 
 // Port where we'll run the websocket server
