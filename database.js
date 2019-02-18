@@ -18,16 +18,12 @@ pool.connect().then(() => {
 
 module.exports.getUsersMessages=function (recipientID,senderID,callback) {
   console.log(`SELECT * FROM UsersMessages WHERE recipientID = \'${recipientID}\' AND senderID = \'${senderID}\'`)
-  //await pool; // ensures that the pool has been created
   try {
-    const request = pool.request(); // or: new sql.Request(pool1)
-    //const result = 
+    const request = pool.request();
     request.query(`SELECT * FROM UsersMessages WHERE recipientID = \'${recipientID}\' AND senderID = \'${senderID}\'`).then(function (recordSet) {
       console.log(recordSet);
-    //console.dir(result);
-     callback(recordSet);
+      callback(recordSet);
     }).catch(function (err) {
-      //8.
       console.log(err);
       pool.close();
   });
@@ -38,9 +34,9 @@ module.exports.getUsersMessages=function (recipientID,senderID,callback) {
 }
 module.exports.saveUsersMessages=function (recipientID,senderID,message) {
   console.log(`Querry: INSERT INTO UsersMessages (recipientID,senderID,message) VALUES (\'${recipientID}\',\'${senderID}\',\'${message}\')`)
-  //await pool; // ensures that the pool has been created
+  
   try {
-    const request = pool.request(); // or: new sql.Request(pool1)
+    const request = pool.request();
     const result = request.query(`INSERT INTO UsersMessages (recipientID,senderID,message) VALUES (\'${recipientID}\',\'${senderID}\',\'${message}\')`)
     console.dir(result)
     return result;
@@ -49,9 +45,3 @@ module.exports.saveUsersMessages=function (recipientID,senderID,message) {
       return err;
   }
 }
-
-//module.exports.saveUsersMessages = saveUsersMessages;
-//module.exports.getUsersMessages = getUsersMessages;
-console.log("after async");
-
-//module.exports = {sql, pool}

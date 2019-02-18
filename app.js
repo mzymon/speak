@@ -32,59 +32,59 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/login', login);
 
-function authenticate({...usernameAndPassword}, res) {
+function authenticate({ ...usernameAndPassword }, res) {
     userService.authenticate(...usernameAndPassword)
         .then(user => {
-            if(user){
+            if (user) {
                 res.json(user);
                 console.log(json(user));
                 console.log('token is: ' + user.token);
             }
-            else{
+            else {
                 res.status(400).json({ message: 'Username or password is incorrect' })
-                .catch(console.log(err));
+                    .catch(console.log(err));
             }
         });
-    if(res.status == 400){
+    if (res.status == 400) {
         console.log('ERROR 400 during autenthicate in app.js');
     }
-    else{
+    else {
         console.log('Authentication is done in app.js');
-        console.log('Token is: ' );
+        console.log('Token is: ');
     }
 }
 
-app.post('/loginUser',function(req, res){
+app.post('/loginUser', function (req, res) {
     console.log(req.body.JSON);
-    var user_name=req.body.user;
-    var pass=req.body.password;
-    console.log("User name = "+user_name+", password is "+pass);
-    authenticate({user_name, pass}, res);
+    var user_name = req.body.user;
+    var pass = req.body.password;
+    console.log("User name = " + user_name + ", password is " + pass);
+    authenticate({ user_name, pass }, res);
     res.end("yes");
 });
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use(function (req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  if (err.name === 'UnauthorizedError') {
-    // jwt authentication error
-    res.status(401);
-    res.render('error 401: authentication error');
-    return res.status.json({ message: 'Invalid Token' });
-  }
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    if (err.name === 'UnauthorizedError') {
+        // jwt authentication error
+        res.status(401);
+        res.render('error 401: authentication error');
+        return res.status.json({ message: 'Invalid Token' });
+    }
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 // Handlebars default config
@@ -96,16 +96,16 @@ const partialsDir = __dirname + '/views/partials';
 const filenames = fs.readdirSync(partialsDir);
 
 filenames.forEach(function (filename) {
-  const matches = /^([^.]+).hbs$/.exec(filename);
-  if (!matches) {
-    return;
-  }
-  const name = matches[1];
-  const template = fs.readFileSync(partialsDir + '/' + filename, 'utf8');
-  hbs.registerPartial(name, template);
+    const matches = /^([^.]+).hbs$/.exec(filename);
+    if (!matches) {
+        return;
+    }
+    const name = matches[1];
+    const template = fs.readFileSync(partialsDir + '/' + filename, 'utf8');
+    hbs.registerPartial(name, template);
 });
 
-hbs.registerHelper('json', function(context) {
+hbs.registerHelper('json', function (context) {
     return JSON.stringify(context, null, 2);
 });
 
@@ -131,8 +131,8 @@ var clients = [];
  * Helper function for escaping input strings
  */
 function htmlEntities(str) {
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 // Array with some colors
@@ -146,7 +146,7 @@ colors.sort(function (a, b) { return Math.random() > 0.5; });
 var server = http.createServer();
 
 server.listen(webSocketsServerPort, function () {
-  console.log((new Date()) + " Server is listening on port " + webSocketsServerPort);
+    console.log((new Date()) + " Server is listening on port " + webSocketsServerPort);
 });
 
 /**
@@ -175,27 +175,25 @@ wsServer.on('request', function (request) {
     console.log((new Date()) + ' Connection accepted.');
 
     //get history from db
-    database.getUsersMessages(1,2, function (messagesHistory) {
-        var data=messagesHistory.recordset;
-        console.log("to zech dostol: "+data);
+    database.getUsersMessages(1, 2, function (messagesHistory) {
+        var data = messagesHistory.recordset;
         var hist = [];
-        for(var i=0; i<data.length; i++)
-        {
+        for (var i = 0; i < data.length; i++) {
             var obj = {
-            time: data[i].dateTime,
-            text: htmlEntities(data[i].message.trim()),
-            author: data[i].senderID,
-            color: 'red'
+                time: data[i].dateTime,
+                text: htmlEntities(data[i].message.trim()),
+                author: data[i].senderID,
+                color: 'red'
             };
             console.log(obj);
             hist.push(obj);
-    
+
         }
         if (hist.length > 0) {
-        connection.sendUTF(JSON.stringify({ type: 'history', data: hist }));
+            connection.sendUTF(JSON.stringify({ type: 'history', data: hist }));
         }
     });
-    
+
 
     // send back chat history
     // if (history.length > 0) {
@@ -235,7 +233,7 @@ wsServer.on('request', function (request) {
                 }
 
                 //save message to db
-                database.saveUsersMessages(1,2,message.utf8Data);
+                database.saveUsersMessages(1, 2, message.utf8Data);
             }
         }
     });
