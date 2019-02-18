@@ -143,10 +143,33 @@ wsServer.on('request', function (request) {
 
     console.log((new Date()) + ' Connection accepted.');
 
+    //get history from db
+    database.getUsersMessages(1,2, function (messagesHistory) {
+        var data=messagesHistory.recordset;
+        console.log("to zech dostol: "+data);
+        var hist = [];
+        for(var i=0; i<data.length; i++)
+        {
+            var obj = {
+            time: data[i].dateTime,
+            text: htmlEntities(data[i].message.trim()),
+            author: data[i].senderID,
+            color: 'red'
+            };
+            console.log(obj);
+            hist.push(obj);
+    
+        }
+        if (hist.length > 0) {
+        connection.sendUTF(JSON.stringify({ type: 'history', data: hist }));
+        }
+    });
+    
+
     // send back chat history
-    if (history.length > 0) {
-        connection.sendUTF(JSON.stringify({ type: 'history', data: history }));
-    }
+    // if (history.length > 0) {
+    //     connection.sendUTF(JSON.stringify({ type: 'history', data: history }));
+    // }
 
     // user sent some message
     connection.on('message', function (message) {

@@ -16,14 +16,21 @@ pool.connect().then(() => {
     })
 })
 
-async function getUsersMessages(recipientID,senderID) {
-  console.log(`Querry: SELECT * FROM UsersMessages WHERE recipientID = "${recipientID}" AND senderID = "${senderID}"`)
-  await pool; // ensures that the pool has been created
+module.exports.getUsersMessages=function (recipientID,senderID,callback) {
+  console.log(`SELECT * FROM UsersMessages WHERE recipientID = \'${recipientID}\' AND senderID = \'${senderID}\'`)
+  //await pool; // ensures that the pool has been created
   try {
     const request = pool.request(); // or: new sql.Request(pool1)
-    const result = request.query('SELECT * FROM UsersMessages WHERE recipientID = "${recipientID}" AND senderID = "${senderID}"')
-    console.dir(result)
-    return result;
+    //const result = 
+    request.query(`SELECT * FROM UsersMessages WHERE recipientID = \'${recipientID}\' AND senderID = \'${senderID}\'`).then(function (recordSet) {
+      console.log(recordSet);
+    //console.dir(result);
+     callback(recordSet);
+    }).catch(function (err) {
+      //8.
+      console.log(err);
+      pool.close();
+  });
   } catch (err) {
       console.error('SQL error', err);
       return err;
