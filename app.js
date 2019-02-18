@@ -29,7 +29,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/login', login);
 
-app.use('/loginUser',function(req,res){
+app.post('/loginUser',function(req,res){
     console.log(req.body.JSON);
     var user_name=req.body.user;
     var password=req.body.password;
