@@ -163,7 +163,7 @@ wsServer.on('request', function (request) {
                     time: data[i].dateTime,
                     text: htmlEntities(data[i].message.trim()),
                     author: data[i].username,
-                    color: 'red'
+                    color: 'grey'
                 };
                 console.log(obj);
                 hist.push(obj);
@@ -244,7 +244,7 @@ wsServer.on('request', function (request) {
                                         time: data[i].dateTime,
                                         text: htmlEntities(data[i].message.trim()),
                                         author: data[i].username,
-                                        color: 'white'
+                                        color: 'grey'
                                     };
                                     console.log(obj);
                                     hist.push(obj);
@@ -267,7 +267,7 @@ wsServer.on('request', function (request) {
                                         time: data[i].dateTime,
                                         text: htmlEntities(data[i].message.trim()),
                                         author: data[i].username,
-                                        color: 'red'
+                                        color: 'grey'
                                     };
                                     console.log(obj);
                                     hist.push(obj);
