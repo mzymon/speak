@@ -190,7 +190,7 @@ wsServer.on('request', function (request) {
             + ' with ' + userColor + ' color.');
 
         //get history from db
-        database.getUserMessages(userID, function (messagesHistory) {
+        database.getUserMessages(0, function (messagesHistory) {
             var data = messagesHistory.recordset;
             var hist = [];
             for (var i = 0; i < data.length; i++) {
@@ -236,16 +236,23 @@ wsServer.on('request', function (request) {
                     history.push(obj);
                     history = history.slice(-100);
 
-                    var responseJson = JSON.stringify({ type: 'message', data: obj });
+                    
                     if (recipientID == 0) {
+                        var responseJson = JSON.stringify({ type: 'messagePublic', data: obj });
                         // broadcast message to all connected clients if no user selected
                         for (var i = 0; i < clients.length; i++) {
                             clients[i].sendUTF(responseJson);
                         }
                     }
                     else {
+                        var responseJson = JSON.stringify({ type: 'messagePrivate', data: obj });
                         //send message to user
                         connection.sendUTF(responseJson);
+                        for (var i = 0; i < activeUsers.length; i++) {
+                            if (activeUsers[i].userID == recipientID) {
+                                clients[activeUsers[i].index].sendUTF(responseJson);
+                            }
+                        }
                         // broadcast message to a specific connected client
                         //check if client is avaiable first
 
@@ -258,28 +265,53 @@ wsServer.on('request', function (request) {
                 else if (json.type === 'speakTo') {
 
                     var recipientName = json.data;
-                    database.getUserId(recipientName, function (userID) {
-                        recipientID = userID;
-                    });
-                    connection.sendUTF(JSON.stringify({ type: 'recipient', data: recipientName }));
-                    
-                    //send history
-                    database.getMessagesBetweenUsers(recipientID,userID, function (messagesHistory) {
-                        var data = messagesHistory.recordset;
-                        var hist = [];
-                        for (var i = 0; i < data.length; i++) {
-                            var obj = {
-                                time: data[i].dateTime,
-                                text: htmlEntities(data[i].message.trim()),
-                                author: data[i].senderID,
-                                color: 'white'
-                            };
-                            console.log(obj);
-                            hist.push(obj);
-            
+                    database.getUserId(recipientName, function (recipient) {
+                        recipientID = recipient;
+                        if (recipientID != 0) {
+                            connection.sendUTF(JSON.stringify({ type: 'recipient', data: recipientName }));
+
+                            //send history
+                            database.getMessagesBetweenUsers(recipientID, userID, function (messagesHistory) {
+                                var data = messagesHistory.recordset;
+                                var hist = [];
+                                for (var i = 0; i < data.length; i++) {
+                                    var obj = {
+                                        time: data[i].dateTime,
+                                        text: htmlEntities(data[i].message.trim()),
+                                        author: data[i].senderID,
+                                        color: 'white'
+                                    };
+                                    console.log(obj);
+                                    hist.push(obj);
+
+                                }
+                                if (hist.length > 0) {
+                                    connection.sendUTF(JSON.stringify({ type: 'history', data: hist }));
+                                }
+                            });
                         }
-                        if (hist.length > 0) {
-                            connection.sendUTF(JSON.stringify({ type: 'history', data: hist }));
+                        else {
+                            connection.sendUTF(JSON.stringify({ type: 'recipient', data: "all users" }));
+                            
+                            //get history from db
+                            database.getUserMessages(0, function (messagesHistory) {
+                                var data = messagesHistory.recordset;
+                                var hist = [];
+                                for (var i = 0; i < data.length; i++) {
+                                    var obj = {
+                                        time: data[i].dateTime,
+                                        text: htmlEntities(data[i].message.trim()),
+                                        author: data[i].senderID,
+                                        color: 'red'
+                                    };
+                                    console.log(obj);
+                                    hist.push(obj);
+
+                                }
+                                if (hist.length > 0) {
+                                    connection.sendUTF(JSON.stringify({ type: 'history', data: hist }));
+                                }
+                            });
                         }
                     });
 

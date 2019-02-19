@@ -31,7 +31,7 @@ $(function () {
         pass = $("#password").val();
 
         // open connection
-        connection = new WebSocket(`ws://localhost:1337/${user}.${pass}`);
+        connection = new WebSocket(`ws://192.168.0.105:1337/${user}.${pass}`);
 
 
         connection.onopen = function () {
@@ -76,9 +76,14 @@ $(function () {
                         json.data[i].color, new Date(json.data[i].time));
                 }
             }
-            else if (json.type === 'message') { // it's a single message
+            else if (json.type === 'messagePublic') { // it's a single public message
                 input.removeAttr('disabled'); // let the user write another message
-                addMessage(json.data.author, json.data.text,
+                addMessage(json.data.author, "PUBLIC: " + json.data.text,
+                    json.data.color, new Date(json.data.time));
+            }
+            else if (json.type === 'messagePrivate') { // it's a single private message
+                input.removeAttr('disabled'); // let the user write another message
+                addMessage(json.data.author, "PRIVATE: " + json.data.text,
                     json.data.color, new Date(json.data.time));
             }
             else if (json.type === 'recipient') {
