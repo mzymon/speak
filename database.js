@@ -17,10 +17,22 @@ pool.connect().then(() => {
 })
 
 module.exports.getUserMessages = function (userID, callback) {
-  console.log(`SELECT * FROM UsersMessages WHERE recipientID = \'${userID}\' OR senderID = \'${userID}\'`)
+  console.log(`SELECT m.dateTime
+              ,m.message
+              ,u.username
+              FROM SpeakDB.dbo.UsersMessages m
+                FULL JOIN  SpeakDB.dbo.Users u on m.senderID = u.userID 
+  
+              WHERE m.recipientID = \'${userID}\' OR m.senderID = \'${userID}\'`)
   try {
     const request = pool.request();
-    request.query(`SELECT * FROM UsersMessages WHERE recipientID = \'${userID}\' OR senderID = \'${userID}\'`).then(function (recordSet) {
+    request.query(`SELECT m.dateTime
+                  ,m.message
+                  ,u.username
+                  FROM SpeakDB.dbo.UsersMessages m
+                    FULL JOIN  SpeakDB.dbo.Users u on m.senderID = u.userID 
+
+                  WHERE m.recipientID = \'${userID}\' OR m.senderID = \'${userID}\'`).then(function (recordSet) {
       console.log(recordSet);
       callback(recordSet);
     }).catch(function (err) {
@@ -33,10 +45,22 @@ module.exports.getUserMessages = function (userID, callback) {
   }
 }
 module.exports.getMessagesBetweenUsers = function (recipientID,senderID,callback){
-  console.log(`SELECT * FROM UsersMessages WHERE (recipientID = \'${recipientID}\' AND senderID = \'${senderID}\') OR (recipientID = \'${senderID}\' AND senderID = \'${recipientID}\')`)
+  console.log(`SELECT m.dateTime
+              ,m.message
+              ,u.username
+              FROM SpeakDB.dbo.UsersMessages m
+                FULL JOIN  SpeakDB.dbo.Users u on m.senderID = u.userID
+
+              WHERE (m.recipientID = \'${recipientID}\' AND m.senderID = \'${senderID}\') OR (m.recipientID = \'${senderID}\' AND m.senderID = \'${recipientID}\')`)
   try {
     const request = pool.request();
-    request.query(`SELECT * FROM UsersMessages WHERE (recipientID = \'${recipientID}\' AND senderID = \'${senderID}\') OR (recipientID = \'${senderID}\' AND senderID = \'${recipientID}\')`).then(function (recordSet) {
+    request.query(`SELECT m.dateTime
+                  ,m.message
+                  ,u.username
+                  FROM SpeakDB.dbo.UsersMessages m
+                    FULL JOIN  SpeakDB.dbo.Users u on m.senderID = u.userID
+
+                  WHERE (m.recipientID = \'${recipientID}\' AND m.senderID = \'${senderID}\') OR (m.recipientID = \'${senderID}\' AND m.senderID = \'${recipientID}\')`).then(function (recordSet) {
       console.log(recordSet);
       callback(recordSet);
     }).catch(function (err) {
@@ -62,6 +86,7 @@ module.exports.saveUsersMessages = function (recipientID, senderID, message) {
   }
 }
 
+//for authentication
 module.exports.getUserIdCheckingPassword = function (username, password, callback) {
   console.log(`SELECT userID FROM Users WHERE username = \'${username}\' AND password = \'${password}\'`)
   try {

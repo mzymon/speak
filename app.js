@@ -197,7 +197,7 @@ wsServer.on('request', function (request) {
                 var obj = {
                     time: data[i].dateTime,
                     text: htmlEntities(data[i].message.trim()),
-                    author: data[i].senderID,
+                    author: data[i].username,
                     color: 'red'
                 };
                 console.log(obj);
@@ -278,7 +278,7 @@ wsServer.on('request', function (request) {
                                     var obj = {
                                         time: data[i].dateTime,
                                         text: htmlEntities(data[i].message.trim()),
-                                        author: data[i].senderID,
+                                        author: data[i].username,
                                         color: 'white'
                                     };
                                     console.log(obj);
@@ -301,7 +301,7 @@ wsServer.on('request', function (request) {
                                     var obj = {
                                         time: data[i].dateTime,
                                         text: htmlEntities(data[i].message.trim()),
-                                        author: data[i].senderID,
+                                        author: data[i].username,
                                         color: 'red'
                                     };
                                     console.log(obj);
