@@ -5,10 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-const userService = require('./users.service');
-
 var index = require('./routes/index');
-var login = require('./routes/login');
 
 var app = express();
 const router = express.Router();
@@ -28,38 +25,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/login', login);
-
-function authenticate({ ...usernameAndPassword }, res) {
-    userService.authenticate(...usernameAndPassword)
-        .then(user => {
-            if (user) {
-                res.json(user);
-                console.log(json(user));
-                console.log('token is: ' + user.token);
-            }
-            else {
-                res.status(400).json({ message: 'Username or password is incorrect' })
-                    .catch(console.log(err));
-            }
-        });
-    if (res.status == 400) {
-        console.log('ERROR 400 during autenthicate in app.js');
-    }
-    else {
-        console.log('Authentication is done in app.js');
-        console.log('Token is: ');
-    }
-}
-
-app.post('/loginUser', function (req, res) {
-    console.log(req.body.JSON);
-    var user_name = req.body.user;
-    var pass = req.body.password;
-    console.log("User name = " + user_name + ", password is " + pass);
-    authenticate({ user_name, pass }, res);
-    res.end("yes");
-});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
