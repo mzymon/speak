@@ -62,11 +62,36 @@ module.exports.saveUsersMessages = function (recipientID, senderID, message) {
   }
 }
 
-module.exports.getUserId = function (username, password, callback) {
+module.exports.getUserIdCheckingPassword = function (username, password, callback) {
   console.log(`SELECT userID FROM Users WHERE username = \'${username}\' AND password = \'${password}\'`)
   try {
     const request = pool.request();
     request.query(`SELECT userID FROM Users WHERE username = \'${username}\' AND password = \'${password}\'`).then(function (recordSet) {
+      console.log(recordSet);
+      if (recordSet.recordset.length == 0) {
+        var id = 0;
+        callback(id);
+      }
+      else {
+        var id = recordSet.recordset[0].userID;
+        callback(id);
+      }
+
+    }).catch(function (err) {
+      console.log(err);
+      pool.close();
+    });
+  } catch (err) {
+    console.error('SQL error', err);
+    return err;
+  }
+}
+
+module.exports.getUserId = function (username, callback) {
+  console.log(`SELECT userID FROM Users WHERE username = \'${username}\'`)
+  try {
+    const request = pool.request();
+    request.query(`SELECT userID FROM Users WHERE username = \'${username}\'`).then(function (recordSet) {
       console.log(recordSet);
       if (recordSet.recordset.length == 0) {
         var id = 0;
