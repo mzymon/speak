@@ -53,7 +53,7 @@ module.exports.getUserId = function (username, password, callback) {
     request.query(`SELECT userID FROM Users WHERE username = \'${username}\' AND password = \'${password}\'`).then(function (recordSet) {
       console.log(recordSet);
       if (recordSet.recordset.length == 0) {
-        var id = 0;//recordSet[0];
+        var id = 0;
         callback(id);
       }
       else {
