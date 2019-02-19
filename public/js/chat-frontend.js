@@ -92,6 +92,11 @@ $(function () {
                 if (!msg) {
                     return;
                 }
+                if(msg.startsWith("!speak"))
+                {
+                    var user=msg.substr(7);
+                    connection.send(JSON.stringify({ type: 'speakTo', data: user }));
+                }
                 // send the message as an ordinary text
                 connection.send(msg);
                 $(this).val('');

@@ -32,6 +32,22 @@ module.exports.getUserMessages = function (userID, callback) {
     return err;
   }
 }
+module.exports.getMessagesBetweenUsers = function (recipientID,senderID,callback){
+  console.log(`SELECT * FROM UsersMessages WHERE (recipientID = \'${recipientID}\' AND senderID = \'${senderID}\') OR (recipientID = \'${senderID}\' AND senderID = \'${recipientID}\')`)
+  try {
+    const request = pool.request();
+    request.query(`SELECT * FROM UsersMessages WHERE (recipientID = \'${recipientID}\' AND senderID = \'${senderID}\') OR (recipientID = \'${senderID}\' AND senderID = \'${recipientID}\')`).then(function (recordSet) {
+      console.log(recordSet);
+      callback(recordSet);
+    }).catch(function (err) {
+      console.log(err);
+      pool.close();
+    });
+  } catch (err) {
+    console.error('SQL error', err);
+    return err;
+  }
+}
 module.exports.saveUsersMessages = function (recipientID, senderID, message) {
   console.log(`Querry: INSERT INTO UsersMessages (recipientID,senderID,message) VALUES (\'${recipientID}\',\'${senderID}\',\'${message}\')`)
 
